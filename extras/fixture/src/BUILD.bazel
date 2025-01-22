@@ -1,0 +1,44 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+COPTS = [
+    "-x", "c",
+    "-std=c89",
+    "-Wall",
+    "-Wextra",
+    "-Wpointer-arith",
+    "-Wcast-align",
+    "-Wwrite-strings",
+    "-Wswitch-default",
+    "-Wunreachable-code",
+    "-Winit-self",
+    "-Wmissing-field-initializers",
+    "-Wno-unknown-pragmas",
+    "-Wstrict-prototypes",
+    "-Wundef",
+    "-Wold-style-definition",
+]
+
+cc_library(
+    name  = "fixture",
+    linkstatic = True,
+    hdrs  = ["unity_fixture.h"],
+    srcs  = [
+        "unity_fixture.c",
+        "unity_fixture.h",
+        "unity_fixture_internals.h"
+    ],
+    copts = COPTS + [
+        "-Isrc",
+        "-Iextras/memory/src"
+    ],
+    deps  = [
+        "//src:unity",
+        "//extras/memory/src:memory"
+    ],
+    local_defines = select({
+        "//extras/fixture:no_extras?": ["UNITY_FIXTURE_NO_EXTRAS"],
+        "//conditions:default":   []
+    }),
+    visibility = ["//visibility:public"]
+)
+

@@ -1,0 +1,6 @@
+test_suite(
+    name = "test",
+    tests = [
+        "//examples/example_2/test/test_runners:1",
+    ]
+)

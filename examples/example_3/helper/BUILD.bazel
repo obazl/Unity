@@ -1,0 +1,38 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+COPTS = [
+    "-x", "c",
+    "-std=c89",
+    "-Wall",
+    "-Wextra",
+    "-Wpointer-arith",
+    "-Wcast-align",
+    "-Wwrite-strings",
+    "-Wswitch-default",
+    "-Wunreachable-code",
+    "-Winit-self",
+    "-Wmissing-field-initializers",
+    "-Wno-unknown-pragmas",
+    "-Wstrict-prototypes",
+    "-Wundef",
+    "-Wold-style-definition",
+    "-Wno-comment"
+]
+
+cc_library(
+    name  = "helper",
+    linkstatic = True,
+    hdrs  = ["UnityHelper.h"],
+    srcs  = ["UnityHelper.c"],
+    copts = COPTS + [
+        # "-Iexamples/example_2/src",
+        # "-Iextras/fixture/src",
+        # "-Iextras/memory/src",
+        "-Isrc"
+    ],
+    deps  = [
+        "//src:unity",
+    ],
+    visibility = ["//visibility:public"]
+)
+
