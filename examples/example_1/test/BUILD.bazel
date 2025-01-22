@@ -1,0 +1,50 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+COPTS = [
+    "-x", "c",
+    "-std=c89",
+    "-Wall",
+    "-Wextra",
+    "-Wpointer-arith",
+    "-Wcast-align",
+    "-Wwrite-strings",
+    "-Wswitch-default",
+    "-Wunreachable-code",
+    "-Winit-self",
+    "-Wmissing-field-initializers",
+    "-Wno-unknown-pragmas",
+    "-Wstrict-prototypes",
+    "-Wundef",
+    "-Wold-style-definition",
+]
+
+cc_library(
+    name  = "TestProductionCode",
+    linkstatic = True,
+    srcs  = ["TestProductionCode.c"],
+    copts = COPTS + [
+        "-Iexamples/example_1/src",
+        "-Isrc"
+    ],
+    deps  = [
+        "//src:unity",
+        "//examples/example_1/src:ProductionCode"
+    ],
+    visibility = ["//visibility:public"]
+)
+
+cc_library(
+    name  = "TestProductionCode2",
+    linkstatic = True,
+    srcs  = ["TestProductionCode2.c"],
+    copts = COPTS + [
+        "-Iexamples/example_1/src",
+        "-Isrc"
+    ],
+    deps  = [
+        "//src:unity",
+        "//examples/example_1/src:ProductionCode2"
+    ],
+    visibility = ["//visibility:public"]
+)
+

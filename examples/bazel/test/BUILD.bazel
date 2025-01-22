@@ -1,0 +1,61 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+load("@unity//src:BUILD.bzl", "unity_library")
+unity_library(
+    name = "libunity",
+    config = ":unity_config.h"
+)
+
+
+COPTS = [
+    "-x", "c",
+    "-std=c89",
+    "-Wall",
+    "-Wextra",
+    "-Wpointer-arith",
+    "-Wcast-align",
+    "-Wwrite-strings",
+    "-Wswitch-default",
+    "-Wunreachable-code",
+    "-Winit-self",
+    "-Wmissing-field-initializers",
+    "-Wno-unknown-pragmas",
+    "-Wstrict-prototypes",
+    "-Wundef",
+    "-Wold-style-definition",
+]
+
+cc_library(
+    name  = "TestProductionCode",
+    linkstatic = True,
+    srcs  = ["TestProductionCode.c",
+             ":unity_config.h"],
+    local_defines = ["UNITY_INCLUDE_CONFIG_H"],
+    copts = COPTS + [
+        "-Isrc",                 # unity.h
+        "-Iexamples/bazel/src",  # ProductionCode.h
+        "-Iexamples/bazel/test", # unity_config.h
+    ],
+    deps  = [
+        ":libunity",
+        "//examples/bazel/src:ProductionCode"
+    ],
+    visibility = ["//visibility:public"]
+)
+
+cc_library(
+    name  = "TestProductionCode2",
+    linkstatic = True,
+    srcs  = ["TestProductionCode2.c"],
+    copts = COPTS + [
+        "-Isrc",                 # unity.h
+        "-Iexamples/bazel/src",  # ProductionCode.h
+        "-Iexamples/bazel/test", # unity_config.h
+    ],
+    deps  = [
+        ":libunity",
+        "//examples/bazel/src:ProductionCode2"
+    ],
+    visibility = ["//visibility:public"]
+)
+

@@ -1,0 +1,43 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+COPTS = [
+    "-x", "c",
+    "-std=c89",
+    "-Wall",
+    "-Wextra",
+    "-Wpointer-arith",
+    "-Wcast-align",
+    "-Wwrite-strings",
+    "-Wswitch-default",
+    "-Wunreachable-code",
+    "-Winit-self",
+    "-Wmissing-field-initializers",
+    "-Wno-unknown-pragmas",
+    "-Wstrict-prototypes",
+    "-Wundef",
+    "-Wold-style-definition",
+]
+
+cc_test(
+    name  = "1",
+    linkstatic = True,
+    srcs  = [
+        "all_tests.c",
+        "TestProductionCode_Runner.c",
+        "TestProductionCode2_Runner.c",
+    ],
+    copts = COPTS + [
+        "-Iexamples/example_2/src",
+        "-Iextras/fixture/src",
+        "-Iextras/memory/src",
+        # "-Isrc"
+    ],
+    deps  = [
+        "//src:unity",
+        "//extras/fixture/src:fixture",
+        "//examples/example_2/test:TestProductionCode",
+        "//examples/example_2/test:TestProductionCode2"
+    ],
+    timeout = "short",
+    visibility = ["//visibility:public"]
+)

@@ -1,0 +1,39 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+COPTS = [
+    "-x", "c",
+    "-std=c89",
+    "-Wall",
+    "-Wextra",
+    "-Wpointer-arith",
+    "-Wcast-align",
+    "-Wwrite-strings",
+    "-Wswitch-default",
+    "-Wunreachable-code",
+    "-Winit-self",
+    "-Wmissing-field-initializers",
+    "-Wno-unknown-pragmas",
+    "-Wstrict-prototypes",
+    "-Wundef",
+    "-Wold-style-definition",
+    "-Wno-comment"
+]
+
+cc_library(
+    name  = "ProductionCode",
+    linkstatic = True,
+    hdrs  = ["ProductionCode.h"],
+    srcs  = ["ProductionCode.c"],
+    copts = COPTS,
+    visibility = ["//visibility:public"]
+)
+
+cc_library(
+    name  = "ProductionCode2",
+    linkstatic = True,
+    hdrs  = ["ProductionCode2.h"],
+    srcs  = ["ProductionCode2.c"],
+    copts = COPTS,
+    visibility = ["//visibility:public"]
+)
+

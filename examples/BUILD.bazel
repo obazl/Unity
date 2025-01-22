@@ -1,0 +1,10 @@
+test_suite(
+    name = "examples",
+    tests = [
+        "//examples/example_1:test",
+        "//examples/example_2:test",
+        # no test target for example_3, it depends on ruby
+        "//examples/example_4:test",
+        "//examples/bazel:test"
+    ]
+)

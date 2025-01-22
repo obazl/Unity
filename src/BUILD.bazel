@@ -1,0 +1,87 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
+load("BUILD.bzl", "define_module_version")
+
+cc_library(
+    name  = "unity",
+    linkstatic = True,
+    srcs  = ["unity.c", "unity_internals.h"],
+    hdrs  = ["unity.h"],
+    includes = ["."],
+    copts = ["-x", "c"] + select({
+        "@platforms//os:linux": [
+            "-std=gnu11",
+            "-fPIC",
+            # "-Wl,--no-undefined",
+        ],
+        "//conditions:default": ["-std=c11"],
+    }),
+    defines = define_module_version() + select({
+        ":include_double?": ["UNITY_INCLUDE_DOUBLE"],
+        "//conditions:default":   []
+    }) + select({
+        ":float_type_double": ["UNITY_FLOAT_TYPE=double"],
+        "//conditions:default":   []
+    }),
+    visibility = ["//visibility:public"]
+)
+
+# UNITY_INCLUDE_DOUBLE
+bool_flag(name = "include_double", build_setting_default = False)
+config_setting(name = "include_double?",
+               flag_values = {":include_double": "True"})
+
+# UNITY_FLOAT_TYPE
+string_flag(name = "float_type",
+            build_setting_default = "")
+config_setting(name = "float_type_double",
+               flag_values = {":float_type": "double"})
+
+# UNITY_CLOCK_MS
+# UNITY_COUNTER_TYPE
+# UNITY_DOUBLE_PRECISION
+# UNITY_DOUBLE_TYPE
+# UNITY_EXCLUDE_DETAILS
+# UNITY_EXCLUDE_DOUBLE
+# UNITY_EXCLUDE_FLOAT
+# UNITY_EXCLUDE_FLOAT_PRINT
+# UNITY_EXCLUDE_LIMITS_H
+# UNITY_EXCLUDE_MATH_H
+# UNITY_EXCLUDE_SETJMP_H
+# UNITY_EXCLUDE_STDDEF_H
+# UNITY_EXCLUDE_STDINT_H
+# UNITY_EXCLUDE_STDINT_H
+# UNITY_EXCLUDE_TEST_CASE
+# UNITY_EXCLUDE_TEST_MATRIX
+# UNITY_EXCLUDE_TEST_RANGE
+# UNITY_EXEC_TIME_START
+# UNITY_EXEC_TIME_STOP
+# UNITY_FLOAT_PRECISION
+# UNITY_FLOAT_TYPE
+# UNITY_INCLUDE_CONFIG_H
+# UNITY_INCLUDE_DOUBLE
+# UNITY_INCLUDE_EXEC_TIME
+# UNITY_INCLUDE_FLOAT
+# UNITY_INCLUDE_PRINT_FORMATTED
+# UNITY_INT_WIDTH
+# UNITY_IS_INF
+# UNITY_IS_NAN
+# UNITY_LINE_TYPE
+# UNITY_LONG_WIDTH
+# UNITY_OUTPUT_CHAR(a)
+# UNITY_OUTPUT_CHAR_HEADER_DECLARATION
+# UNITY_OUTPUT_COMPLETE()
+# UNITY_OUTPUT_FLUSH()
+# UNITY_OUTPUT_START()
+# UNITY_POINTER_WIDTH
+# UNITY_PRINT_EOL
+# UNITY_PRINT_EXEC_TIME
+# UNITY_PRINT_TEST_CONTEXT
+# UNITY_SUPPORT_64
+# UNITY_SUPPORT_TEST_CASES
+# UNITY_SUPPORT_VARIADIC_MACROS
+# UNITY_TEST_ABORT
+# UNITY_TEST_PROTECT()
+# UNITY_TIME_TYPE
+# UNITY_UINT
+# UNITY_USE_FLUSH_STDOUT
