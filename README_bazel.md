@@ -1,8 +1,10 @@
 # Using Unity Test with Bazel
 
+This version requires Bazel >=8.0.0.
+
 In your MODULE.bazel file:
 
-    bazel_dep(name = "unity",    version = "2.6.1", dev_dependency=True)
+    bazel_dep(name = "unity",    version = "2.6.1.bzl.8", dev_dependency=True)
 
 In your cc_test targets:
 

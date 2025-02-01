@@ -1,7 +1,8 @@
 module(
     name                = "unity",
-    version             = "2.6.1.bzl",
+    version             = "2.6.1.bzl.8",
     compatibility_level = 2,
+    bazel_compatibility = [">=8.0.0"]
 )
 
 bazel_dep(name = "platforms",    version = "0.0.11")
