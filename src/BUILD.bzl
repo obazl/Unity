@@ -1,4 +1,5 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_import")
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//rules:common_settings.bzl",
      "bool_flag", "string_flag")
 
@@ -8,38 +9,69 @@ def define_module_version():
         native.module_version()
     )]
 
-def _unity_macro_impl(name, config, visibility, **kwargs):
+def unity_library(name, config, **kwargs):
     if config:
         DEFS = ["UNITY_INCLUDE_CONFIG_H"]
-        CFGFILE = [config]
-        CFGPATH = ["-I" + config.package]
     else:
         DEFS = []
-        CFGFILE = []
-        CFGPATH = []
+
+    native.filegroup(
+        name = "cfg_file",
+        srcs = [config]
+    )
 
     cc_library(
         name  = name,
         linkstatic = True,
         srcs  = ["@unity//src:unity.c",
-                 "@unity//src:unity_internals.h"
-                 ] + CFGFILE,
+                 "@unity//src:unity_internals.h",
+                 # ":cfg_file"
+                 config
+                 ],
         hdrs  = ["@unity//src:unity.h"],
         # includes = [".", "src"],
-        copts = ["-x", "c", "-Isrc"] + select({
+        # data  = [config],
+        # deps = [":my_test_lib"],
+        data  = [":cfg_file"],
+        copts = [
+            "-x", "c", "-Isrc",
+            "-I$(UNITY_CONFIG_H_DIR)",
+        ] + select({
             "@platforms//os:linux": [
                 "-std=gnu11",
                 "-fPIC",
             ],
             "//conditions:default": ["-std=c11"],
-        }) + CFGPATH,
+        }),
         local_defines = DEFS,
-        visibility = visibility
+        toolchains = [":unity_config_h_tc"],
+        **kwargs
     )
 
-unity_library = macro(
-    implementation = _unity_macro_impl,
+    _unity_config_h(
+        name = "unity_config_h_tc",
+        cfg_file = config
+    )
+
+# unity_library = macro(
+#     implementation = _unity_macro_impl,
+#     attrs = {
+#         "config": attr.label(configurable = False)
+#     },
+# )
+
+
+def _unity_config_h_impl(ctx):
+    return [
+        platform_common.TemplateVariableInfo({
+            "UNITY_CONFIG_H_DIR": ctx.attr.cfg_file.label.package,
+        }),
+    ]
+
+_unity_config_h = rule(
+    implementation = _unity_config_h_impl,
     attrs = {
-        "config": attr.label(configurable = False)
-    },
+        "cfg_file": attr.label(
+            allow_single_file = True
+    )}
 )

@@ -2,13 +2,18 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
 load("BUILD.bzl", "define_module_version")
 
+exports_files(["unity.c", "unity.h", "unity_internals.h"])
+
 cc_library(
     name  = "unity",
     linkstatic = True,
     srcs  = ["unity.c", "unity_internals.h"],
     hdrs  = ["unity.h"],
     includes = ["."],
-    copts = ["-x", "c"] + select({
+    copts = [
+        "-x", "c",
+        "-Isrc"
+    ] + select({
         "@platforms//os:linux": [
             "-std=gnu11",
             "-fPIC",
