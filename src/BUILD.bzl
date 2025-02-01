@@ -16,7 +16,7 @@ def unity_library(name, config, **kwargs):
         DEFS = []
 
     native.filegroup(
-        name = "cfg_file",
+        name = name + "_cfg_file",
         srcs = [config]
     )
 
@@ -25,14 +25,14 @@ def unity_library(name, config, **kwargs):
         linkstatic = True,
         srcs  = ["@unity//src:unity.c",
                  "@unity//src:unity_internals.h",
-                 # ":cfg_file"
+                 name + "_cfg_file",
                  config
                  ],
         hdrs  = ["@unity//src:unity.h"],
         # includes = [".", "src"],
         # data  = [config],
         # deps = [":my_test_lib"],
-        data  = [":cfg_file"],
+        data  = [name + "_cfg_file"],
         copts = [
             "-x", "c", "-Isrc",
             "-I$(UNITY_CONFIG_H_DIR)",
@@ -44,22 +44,14 @@ def unity_library(name, config, **kwargs):
             "//conditions:default": ["-std=c11"],
         }),
         local_defines = DEFS,
-        toolchains = [":unity_config_h_tc"],
+        toolchains = [name + "_unity_config_h_tc"],
         **kwargs
     )
 
     _unity_config_h(
-        name = "unity_config_h_tc",
+        name = name + "_unity_config_h_tc",
         cfg_file = config
     )
-
-# unity_library = macro(
-#     implementation = _unity_macro_impl,
-#     attrs = {
-#         "config": attr.label(configurable = False)
-#     },
-# )
-
 
 def _unity_config_h_impl(ctx):
     return [
@@ -72,6 +64,6 @@ _unity_config_h = rule(
     implementation = _unity_config_h_impl,
     attrs = {
         "cfg_file": attr.label(
-            allow_single_file = True
+        allow_single_file = True
     )}
 )

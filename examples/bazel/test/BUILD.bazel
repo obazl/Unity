@@ -1,9 +1,26 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 load("@unity//src:BUILD.bzl", "unity_library")
+
+# Different targets may require different params,
+# so different unity_config.h files.
+# In that case the Unity library must be compiled
+# once for each unity_config.h file.
+
+# Same config file path must be passed to unity_library
+# and cc_library rules, so use a var:
+
+UNITY_CONFIG_H = "//examples/bazel/test/config:unity_config.h"
+UNITY_CONFIG_H2 = "//examples/bazel/test/config2:unity_config.h"
+
 unity_library(
     name = "libunity",
-    config = ":unity_config.h"
+    config = UNITY_CONFIG_H
+)
+
+unity_library(
+    name = "libunity2",
+    config = UNITY_CONFIG_H2
 )
 
 
@@ -29,12 +46,12 @@ cc_library(
     name  = "TestProductionCode",
     linkstatic = True,
     srcs  = ["TestProductionCode.c",
-             ":unity_config.h"],
+             UNITY_CONFIG_H],
     local_defines = ["UNITY_INCLUDE_CONFIG_H"],
     copts = COPTS + [
         "-Isrc",                 # unity.h
         "-Iexamples/bazel/src",  # ProductionCode.h
-        "-Iexamples/bazel/test", # unity_config.h
+        "-Iexamples/bazel/test/config", # unity_config.h
     ],
     deps  = [
         ":libunity",
@@ -46,16 +63,17 @@ cc_library(
 cc_library(
     name  = "TestProductionCode2",
     linkstatic = True,
-    srcs  = ["TestProductionCode2.c"],
+    srcs  = ["TestProductionCode2.c",
+             UNITY_CONFIG_H2],
+    local_defines = ["UNITY_INCLUDE_CONFIG_H"],
     copts = COPTS + [
         "-Isrc",                 # unity.h
         "-Iexamples/bazel/src",  # ProductionCode.h
-        "-Iexamples/bazel/test", # unity_config.h
+        "-Iexamples/bazel/test/config2", # unity_config.h
     ],
     deps  = [
-        ":libunity",
+        ":libunity2",
         "//examples/bazel/src:ProductionCode2"
     ],
     visibility = ["//visibility:public"]
 )
-
