@@ -1,0 +1,53 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@unity//src:BUILD.bzl", "unity_library")
+load("//examples/bazel:BUILD.bzl", "COPTS")
+
+UNITY_CONFIG_H_A = "//examples/bazel/unity_config_h/a_test:unity_config.h"
+unity_library( name = "libunity_a",
+               config = UNITY_CONFIG_H_A)
+
+UNITY_CONFIG_H_B = "//examples/bazel/unity_config_h/b_test:unity_config.h"
+unity_library( name = "libunity_b",
+               config = UNITY_CONFIG_H_B)
+
+test_suite(
+    name = "unity_config_h",
+    tests = [
+        ":atest",
+        ":btest",
+    ]
+)
+
+TIMEOUT = "short"
+
+########
+cc_test(
+    name       = "atest",
+    linkstatic = True,
+    srcs       = ["a_test.c",
+                  UNITY_CONFIG_H_A
+                  ],
+    copts      = COPTS + ["-Isrc"] + [
+        "-Iexamples/bazel/unity_config_h/a_test" # unity_config.h
+    ],
+    local_defines = ["UNITY_INCLUDE_CONFIG_H"],
+    deps       = [":libunity_a"],
+    timeout    = TIMEOUT,
+)
+
+cc_test(
+    name       = "btest",
+    linkstatic = True,
+    srcs       = ["b_test.c",
+                  UNITY_CONFIG_H_B
+                  ],
+    copts      = COPTS + ["-Isrc"] + [
+        "-Iexamples/bazel/unity_config_h/b_test" # unity_config.h
+    ],
+    local_defines = ["UNITY_INCLUDE_CONFIG_H"],
+    deps       = [
+        ":libunity_b"
+    ],
+    timeout    = TIMEOUT,
+)
+

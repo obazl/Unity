@@ -1,0 +1,34 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+COPTS = [
+    "-x", "c",
+    "-std=c89",
+    "-Wall",
+    "-Wextra",
+    "-Wpointer-arith",
+    "-Wcast-align",
+    "-Wwrite-strings",
+    "-Wswitch-default",
+    "-Wunreachable-code",
+    "-Winit-self",
+    "-Wmissing-field-initializers",
+    "-Wno-unknown-pragmas",
+    "-Wstrict-prototypes",
+    "-Wundef",
+    "-Wold-style-definition",
+]
+
+cc_test(
+    name  = "test_runner",
+    linkstatic = True,
+    srcs  = ["TestProductionCode_Runner.c"],
+    copts = COPTS + [
+        "-Iexamples/bazel/src"
+    ],
+    deps  = [
+        "//src:unity",
+        "//examples/bazel/test1"
+    ],
+    visibility = ["//visibility:public"]
+)
+

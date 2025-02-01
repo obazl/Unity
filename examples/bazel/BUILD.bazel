@@ -1,7 +1,7 @@
 test_suite(
     name = "bazel",
     tests = [
-        "//examples/bazel/test/test_runners:1",
-        "//examples/bazel/test/test_runners:2"
+        "//examples/bazel/test1/test_runner",
+        "//examples/bazel/test2/test_runner"
     ]
 )

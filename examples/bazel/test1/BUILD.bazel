@@ -1,0 +1,28 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@unity//src:BUILD.bzl", "unity_library")
+load("//examples/bazel:BUILD.bzl", "COPTS")
+
+UNITY_CONFIG_H = ":unity_config.h"
+
+unity_library(
+    name = "libunity",
+    config = UNITY_CONFIG_H
+)
+
+cc_library(
+    name  = "test1",
+    linkstatic = True,
+    srcs  = ["TestProductionCode.c",
+             UNITY_CONFIG_H],
+    local_defines = ["UNITY_INCLUDE_CONFIG_H"],
+    copts = COPTS + [
+        "-Isrc",                 # unity.h
+        "-Iexamples/bazel/src",  # ProductionCode2.h
+        "-Iexamples/bazel/test", # unity_config.h
+    ],
+    deps  = [
+        ":libunity",
+        "//examples/bazel/src:ProductionCode"
+    ],
+    visibility = ["//visibility:public"]
+)

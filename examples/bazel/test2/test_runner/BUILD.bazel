@@ -19,31 +19,15 @@ COPTS = [
 ]
 
 cc_test(
-    name  = "1",
-    linkstatic = True,
-    srcs  = ["TestProductionCode_Runner.c"],
-    copts = COPTS + [
-        "-Iexamples/example_4/src",
-        # "-Isrc"
-    ],
-    deps  = [
-        "//src:unity",
-        "//examples/example_4/test:TestProductionCode"
-    ],
-    visibility = ["//visibility:public"]
-)
-
-cc_test(
-    name  = "2",
+    name  = "test_runner",
     linkstatic = True,
     srcs  = ["TestProductionCode2_Runner.c"],
     copts = COPTS + [
-        "-Iexamples/example_4/src",
-        # "-Isrc"
+        "-Iexamples/bazel/src",
     ],
     deps  = [
         "//src:unity",
-        "//examples/example_4/test:TestProductionCode2"
+        "//examples/bazel/test2"
     ],
     timeout = "short",
     visibility = ["//visibility:public"]
