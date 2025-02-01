@@ -1,8 +1,10 @@
 # Using Unity Test with Bazel
 
+This version supports Bazel 7.0.0.
+
 In your MODULE.bazel file:
 
-    bazel_dep(name = "unity",    version = "2.6.1", dev_dependency=True)
+    bazel_dep(name = "unity",    version = "2.6.1.bzl.7", dev_dependency=True)
 
 In your cc_test targets:
 
@@ -38,7 +40,7 @@ a. Depend on the lib you built wth unity_library()
 
     deps = [":libunity", ...]
 
-b. Your test code must also depend on unity_config.h:
+b. Your test code must also tell Unity to expect a unity_config.h file:
 
     local_defines = ["UNITY_INCLUDE_CONFIG_H", ...],
 
@@ -49,7 +51,7 @@ d.  Treat your `unity_config.h` as a build source file:
 c.  The compiler will search for both `unity.h` and
     `unity_config.h`; make both accessible by adding:
 
-    copts = ["-Iexternal/{}/src".format(Label("@unity").repo_name), -Itest, ...]
+    copts = ["-Ipath/to/config_file"]
 
 You can find a demo of this technique in `examples/bazel/test/BUILD.bazel`.
 
